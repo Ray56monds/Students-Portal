@@ -23,104 +23,97 @@ const courseController = {
             // Password does not match, display an error message
             res.send('Incorrect password. Please try again.');
         }
-            
-        },
-    // Function to retrieve all courses
-    getAllCourses: (req, res) => {
-        fs.readFile(coursesFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Internal Server Error');
-            }
-            const courses = JSON.parse(data);
-            res.json(courses);
-        });
     },
 
-    // Function to retrieve a specific course by ID
+    // Get all courses
+    getAllCourses: (req, res) => {
+        try {
+            const coursesData = fs.readFileSync(coursesFilePath, 'utf-8');
+            const courses = JSON.parse(coursesData);
+            res.status(200).json(courses);
+        } catch (error) {
+            res.status(500).json({ message: 'Error getting courses' });
+        }
+    },
+
+    // Get a course by ID
     getCourseById: (req, res) => {
         const courseId = req.params.courseId;
-        fs.readFile(coursesFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Internal Server Error');
-            }
-            const courses = JSON.parse(data);
-            const course = courses.find(course => course._id === courseId);
+        try {
+            const coursesData = fs.readFileSync(coursesFilePath, 'utf-8');
+            const courses = JSON.parse(coursesData);
+            const course = courses.find(c => c._id === courseId);
             if (!course) {
-                return res.status(404).send('Course not found');
+                res.status(404).json({ message: 'Course not found' });
+            } else {
+                res.status(200).json(course);
             }
-            res.json(course);
-        });
+        } catch (error) {
+            res.status(500).json({ message: 'Error getting course' });
+        }
     },
 
-    // Function to create a new course
+    // Create a new course
     createCourse: (req, res) => {
-        const newCourse = req.body;
-        fs.readFile(coursesFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Internal Server Error');
-            }
-            const courses = JSON.parse(data);
-            newCourse._id = Date.now().toString();
-            courses.push(newCourse);
-            fs.writeFile(coursesFilePath, JSON.stringify(courses, null, 2), (err) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).send('Internal Server Error');
-                }
-                res.status(201).json(newCourse);
-            });
-        });
+        try {
+            const { title, description, instructor, price, rating } = req.body;
+            const newCourse = {
+                _id: `course_id${Math.floor(Math.random() * 1000)}`, //this generates a unique ID
+                title,
+                description,
+                instructor,
+                price,
+                createdAt: new Date().toISOString(), //this will generate the current date and time
+            };
+            const coursesData = JSON.parse(fs.readFileSync(coursesFilePath, 'utf-8'));
+            coursesData.push(newCourse);
+            fs.writeFileSync(coursesFilePath, JSON.stringify(coursesData, null, 2));
+            res.status(201).json(newCourse);
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating course' });
+        }
     },
 
-    // Function to update a specific course by ID
+    // Update a course by ID
     updateCourseById: (req, res) => {
         const courseId = req.params.courseId;
-        const updatedCourse = req.body;
-        fs.readFile(coursesFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Internal Server Error');
+        const { title, description, instructor, price } = req.body;
+        try {
+            let coursesData = JSON.parse(fs.readFileSync(coursesFilePath, 'utf-8'));
+            const courseIndex = coursesData.findIndex((course) => course._id === courseId);
+            if (courseIndex === -1) {
+                res.status(404).json({ message: 'Course not found' });
+            } else {
+                coursesData[courseIndex] = {
+                    ...coursesData[courseIndex],
+                    title: title || coursesData[courseIndex].title,
+                    description: description || coursesData[courseIndex].description,
+                    instructor: instructor || coursesData[courseIndex].instructor,
+                    price: price || coursesData[courseIndex].price,
+                };
+                fs.writeFileSync(coursesFilePath, JSON.stringify(coursesData, null, 2));
+                res.status(200).json(coursesData[courseIndex]);
             }
-            let courses = JSON.parse(data);
-            const index = courses.findIndex(course => course._id === courseId);
-            if (index === -1) {
-                return res.status(404).send('Course not found');
-            }
-            courses[index] = { ...courses[index], ...updatedCourse };
-            fs.writeFile(coursesFilePath, JSON.stringify(courses, null, 2), (err) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).send('Internal Server Error');
-                }
-                res.json(courses[index]);
-            });
-        });
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating course' });
+        }
     },
 
-    // Function to delete a specific course by ID
+    // Delete a course by ID
     deleteCourseById: (req, res) => {
         const courseId = req.params.courseId;
-        fs.readFile(coursesFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Internal Server Error');
+        try {
+            let coursesData = JSON.parse(fs.readFileSync(coursesFilePath, 'utf-8'));
+            const updatedCoursesData = coursesData.filter((course) => course._id !== courseId);
+            if (updatedCoursesData.length === coursesData.length) {
+                res.status(404).json({ message: 'Course not found' });
+            } else {
+                fs.writeFileSync(coursesFilePath, JSON.stringify(updatedCoursesData, null, 2));
+                res.status(204).json({ message: 'Course deleted successfully' });
             }
-            let courses = JSON.parse(data);
-            const filteredCourses = courses.filter(course => course._id !== courseId);
-            if (filteredCourses.length === courses.length) {
-                return res.status(404).send('Course not found');
-            }
-            fs.writeFile(coursesFilePath, JSON.stringify(filteredCourses, null, 2), (err) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).send('Internal Server Error');
-                }
-                res.status(204).send();
-            });
-        });
+        } catch (error) {
+            res.status(500).json({ message: 'Error deleting course' });
+        }
     }
 };
 
