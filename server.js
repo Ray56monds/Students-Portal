@@ -4,7 +4,7 @@ import path from 'path';
 import { handleLogin } from './controllers/courseController.js';
 import courseRoutes from './routes/courseRoutes.js';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname); // Fix for __dirname
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const app = express();
 
