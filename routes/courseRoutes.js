@@ -1,4 +1,4 @@
-// Import necessary modules
+// Import required modules
 import express from 'express';
 import * as courseController from '../controllers/courseController.js';
 
