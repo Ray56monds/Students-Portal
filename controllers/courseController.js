@@ -2,7 +2,10 @@
 import fs from 'fs';
 import path from 'path';
 
-// Defining path to the courses JSON file
+// Get the directory name using import.meta.url
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
+// Define the path to the courses JSON file
 const coursesFilePath = path.resolve(__dirname, '../models/courses.json');
 
 // Defining a hardcoded password for authentication

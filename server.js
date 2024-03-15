@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
-import { handleLogin } from './controllers/courseController.js';
+import handleLogin from './controllers/courseController.js';
 import courseRoutes from './routes/courseRoutes.js';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
