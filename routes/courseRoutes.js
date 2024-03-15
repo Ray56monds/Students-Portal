@@ -1,6 +1,8 @@
+// Import necessary modules
 import express from 'express';
-import courseController from '../controllers/courseController.js'; // Import the courseController
+import * as courseController from '../controllers/courseController.js';
 
+// Create router
 const router = express.Router();
 
 // Define routes for CRUD operations on courses
@@ -10,5 +12,5 @@ router.get('/courses/:courseId', courseController.getCourseById);
 router.patch('/courses/:courseId', courseController.updateCourseById);
 router.delete('/courses/:courseId', courseController.deleteCourseById);
 
-// Export the router
+// Export router
 export default router;
