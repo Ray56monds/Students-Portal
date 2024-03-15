@@ -13,6 +13,7 @@
   "author": "Raymond Magezi",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.3"
+    "express": "^4.18.3",
+    "morgan": "^1.10.0"
   }
 }
