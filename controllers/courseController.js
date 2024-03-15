@@ -5,8 +5,23 @@ import path from 'path';
 // Defining path to the courses JSON file
 const coursesFilePath = path.resolve(__dirname, '../models/courses.json');
 
+// Defining a hardcoded password for authentication
+const hardcodedPassword = 'your_hardcoded_password';
+
 // Defining controller functions for handling course-related requests
 const courseController = {
+    // Function to handle login request
+    handleLogin: (req, res) => {
+        const { password } = req.body;
+        if (password === hardcodedPassword) {
+            // Password matches, redirect user to the Node course page
+            res.redirect('/node-course');
+        } else {
+            // Password does not match, display an error message
+            res.send('Incorrect password. Please try again.');
+        }
+            
+        },
     // Function to retrieve all courses
     getAllCourses: (req, res) => {
         fs.readFile(coursesFilePath, 'utf8', (err, data) => {
