@@ -1,0 +1,26 @@
+[
+    {
+      "_id": "course_id_1",
+      "title": "Node.js Basics",
+      "description": "Learn the basics of Node.js programming",
+      "instructor": "John Doe",
+      "price": 100,
+      "createdAt": "2024-03-12T08:00:00Z"
+    },
+    {
+      "_id": "course_id_2",
+      "title": "Express.js Fundamentals",
+      "description": "Master the fundamentals of Express.js framework",
+      "instructor": "Jane Smith",
+      "price": 150,
+      "createdAt": "2024-03-11T10:30:00Z"
+    },
+    {
+      "_id": "course_id_3",
+      "title": "MongoDB for Node Developers",
+      "description": "Deep dive into MongoDB with Node.js",
+      "instructor": "Michael Johnson",
+      "price": 200,
+      "createdAt": "2024-03-10T15:45:00Z"
+    }
+  ]
